@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-await mongoose.connect("");
 
 // USER
 const userSchema = new Schema({

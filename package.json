@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/Vedant1607/Course-Selling-App#readme",
   "dependencies": {
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.17.1"
