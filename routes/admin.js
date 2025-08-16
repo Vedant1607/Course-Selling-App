@@ -1,5 +1,4 @@
 import { Router } from "express";
-import { adminModel } from "../db";
 
 export const adminRouter = Router();
 
@@ -27,7 +26,7 @@ adminRouter.put('/course', (req, res) => {
     })
 });
 
-adminRouter.get('course/bulk', (req, res) => {
+adminRouter.get('/course/bulk', (req, res) => {
     res.json({
         message:"course bulk endpoint"
     })

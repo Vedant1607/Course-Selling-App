@@ -7,6 +7,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 
 const app = express();
+app.use(express.json());
 dotenv.config();
 
 app.use("/user", userRouter);
@@ -24,4 +25,4 @@ async function main() {
     })
 }
 
-main()
+main();
