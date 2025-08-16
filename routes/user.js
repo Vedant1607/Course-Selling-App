@@ -1,9 +1,12 @@
 import { Router } from 'express';
 import { userModel } from '../db.js';
+import jwt from 'jsonwebtoken';
+import dotenv from "dotenv";
 
 export const userRouter = Router();
+dotenv.config();
 
-
+const JWT_USER_PASSWORD = process.env.JWT_USER_PASSWORD;
 
 userRouter.post("/signup", async (req, res) => {
 
@@ -23,10 +26,29 @@ userRouter.post("/signup", async (req, res) => {
   });
 });
 
-userRouter.post("/signin", (req, res) => {
-  res.json({
-    message: "signin endpoint",
+userRouter.post("/signin", async (req, res) => {
+
+  // TODO: ideally password should be hashed, and hence you can't compare the user provided password and the database password
+  const { email, password } = req.body;
+
+  const user = await userModel.findOne({
+    email:email,
+    password:password,
   });
+
+  if (user) {
+    const token = jwt.sign({
+      id:user._id,
+    }, JWT_USER_PASSWORD)
+
+    res.json({
+      token:token,
+    })
+  } else {
+    res.status(403).json({
+      message:"Incorrect credentials",
+    })
+  }
 });
 
 userRouter.get("/purchases", (req, res) => {
