@@ -22,5 +22,6 @@ courseRouter.get("/preview", async (req, res) => {
   
   res.json({
     message: "courses",
+    courses
   });
 });

@@ -52,11 +52,17 @@ userRouter.post("/signin", async (req, res) => {
 userRouter.get("/purchases", userMiddleware, async (req, res) => {
   const userId = req.userId;
 
+  // check if user has purchases the course
   const purchases = await purchaseModel.find({
     userId
   });
 
+  const courseData = await courseModel.find({
+    _id:{$in:purchases.map(x => x.courseId)}
+  })
+
   res.json({
-    purchases
+    purchases,
+    courseData
   });
 });
