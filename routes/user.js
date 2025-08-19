@@ -1,12 +1,9 @@
 import { Router } from 'express';
 import { userModel } from '../db.js';
 import jwt from 'jsonwebtoken';
-import dotenv from "dotenv";
+import { JWT_USER_PASSWORD } from '../config.js';
 
 export const userRouter = Router();
-dotenv.config();
-
-const JWT_USER_PASSWORD = process.env.JWT_USER_PASSWORD;
 
 userRouter.post("/signup", async (req, res) => {
 
