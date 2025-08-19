@@ -65,32 +65,47 @@ adminRouter.post("/course", adminMiddleware, async (req, res) => {
 
   res.json({
     message: "Course created",
+    courseId:course._id,
   });
 });
 
 adminRouter.put("/course", adminMiddleware, async (req, res) => {
-
   const adminId = req.userId;
+  const { title, description, imageUrl, price, courseId } = req.body;
 
-  const { title, description, imageUrl, price, courseId, creatorId } = req.body;
+  const result = await courseModel.findOneAndUpdate(
+    { _id: courseId, creatorId: adminId },
+    { title, description, imageUrl, price }
+  );
 
-  const course = await courseModel.updateOne({
-    _id:courseId,
-    creatorId:adminId
-  },{
-    title: title,
-    description: description,
-    imageUrl: imageUrl,
-    price: price,
-  });
+  if (result.matchedCount === 0) {
+    return res.status(403).json({
+      message: "Course not found or you are not authorized to update it",
+    });
+  }
 
   res.json({
     message: "Course Updated",
+    courseId,
   });
 });
 
-adminRouter.get("/course/bulk", (req, res) => {
+
+adminRouter.get("/course/bulk", adminMiddleware, async (req, res) => {
+  const adminId = req.userId;
+
+  const courses = await courseModel.find({
+    creatorId: adminId,
+  });
+
+  if (courses.length === 0) {
+    return res.status(403).json({
+      message:"No courses found"
+    });
+  }
+
   res.json({
-    message: "course bulk endpoint",
+    message: "Course found",
+    courses:courses
   });
 });
