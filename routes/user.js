@@ -1,7 +1,8 @@
 import { Router } from 'express';
-import { userModel } from '../db.js';
+import { courseModel, purchaseModel, userModel } from '../db.js';
 import jwt from 'jsonwebtoken';
 import { JWT_USER_PASSWORD } from '../config.js';
+import { userMiddleware } from '../middleware/user.js';
 
 export const userRouter = Router();
 
@@ -48,8 +49,14 @@ userRouter.post("/signin", async (req, res) => {
   }
 });
 
-userRouter.get("/purchases", (req, res) => {
+userRouter.get("/purchases", userMiddleware, async (req, res) => {
+  const userId = req.userId;
+
+  const purchases = await purchaseModel.find({
+    userId
+  });
+
   res.json({
-    message: "purchases endpoint",
+    purchases
   });
 });
