@@ -16,7 +16,7 @@ app.use("/admin", adminRouter);
 
 async function main() {
     await mongoose
-        .connect(process.env.MONGO_URI)
+        .connect(process.env.MONGO_URI as unknown as string)
         .then(() => console.log("Connected to MongoDB"))
         .catch((err) => console.error("MongoDB connection error:", err));
     
