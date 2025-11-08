@@ -1,12 +1,28 @@
-import { Router } from 'express';
+import { Router, type Request, type Response } from 'express';
 import { courseModel, purchaseModel, userModel } from '../db.js';
 import jwt from 'jsonwebtoken';
 import { JWT_USER_PASSWORD } from '../config.js';
-import { userMiddleware } from '../middleware/user.js';
+import { userMiddleware } from '../midleware.js';
 
 export const userRouter = Router();
 
-userRouter.post("/signup", async (req, res) => {
+interface AuthRequest extends Request {
+  userId?: string;
+}
+
+interface SignupBody {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+}
+
+interface SigninBody {
+  email: string;
+  password: string;
+}
+
+userRouter.post("/signup", async (req: Request<{}, {}, SignupBody>, res: Response) => {
 
   const { email, password, firstName, lastName } = req.body; // TODO: adding zod validation
   // TODO: hash the password so plaintext pw is not stored in the DB
@@ -24,7 +40,7 @@ userRouter.post("/signup", async (req, res) => {
   });
 });
 
-userRouter.post("/signin", async (req, res) => {
+userRouter.post("/signin", async (req: Request<{}, {}, SigninBody>, res: Response) => {
 
   // TODO: ideally password should be hashed, and hence you can't compare the user provided password and the database password
   const { email, password } = req.body;
@@ -49,7 +65,7 @@ userRouter.post("/signin", async (req, res) => {
   }
 });
 
-userRouter.get("/purchases", userMiddleware, async (req, res) => {
+userRouter.get("/purchases", userMiddleware, async (req: AuthRequest, res: Response) => {
   const userId = req.userId;
 
   // check if user has purchases the course
